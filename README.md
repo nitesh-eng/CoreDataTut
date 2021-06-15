@@ -11,3 +11,5 @@ Useful links:
 This is a basic list app that allows users to **add**, **update** and **delete** items. These changes will be saved locally using **CoreData**.
 
 
+## Conclusion
+CoreData has some advantages, such as ease of migration, entity graph representation and ease of setting up relationships. However, **realm should be the go-to choice** because of its speed, thread-safety and general ease-of-use. 
