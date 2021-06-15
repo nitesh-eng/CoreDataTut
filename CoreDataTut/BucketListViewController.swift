@@ -15,10 +15,8 @@ final class BucketListViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     //MARK: - Properties
-    private var addActionEnabled: Bool = false
-    
-    //TEMP
-    private var tempItems = [String]()
+    private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    private var items: [BucketListItem]?
     
     
     //MARK: - Lifecycle
@@ -32,15 +30,39 @@ final class BucketListViewController: UIViewController {
     private func setupTableView() {
         tableView.dataSource = self
         tableView.delegate = self
-        
-        tempItems = ["Skydive", "Snorkel", "Bungie Jump", "Paris", "Houson BBQ", "Salt Flats", "Finish a song"]
+        fetchItems()
+    }
+    
+    private func fetchItems() {
+        //MARK: Retrieving data
+        do {
+            self.items = try context.fetch(BucketListItem.fetchRequest())
+            
+            // Always do UI work in the main thread.
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        } catch {
+            print("Error, unable to fetch BucketListItem.")
+        }
     }
     
     private func addItem(withName name: String) {
-        tempItems.append(name)
-        tableView.beginUpdates()
-        tableView.insertRows(at: [IndexPath(row: tempItems.count-1, section: 0)], with: .automatic)
-        tableView.endUpdates()
+        //MARK: Creating new item
+        // Create a new BucketListItem object
+        let newItem = BucketListItem(context: context)
+        newItem.name = name
+        newItem.dateAdded = Date()
+        
+        // Save the data
+        do {
+            try self.context.save()
+        } catch {
+            print("Error saving context.")
+        }
+        
+        // Refresh table view
+        fetchItems()
     }
     
     //MARK: - Actions
@@ -76,27 +98,39 @@ final class BucketListViewController: UIViewController {
 extension BucketListViewController: UITableViewDataSource, UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tempItems.count
+        guard let items = items else { return 0 }
+        return items.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        if let cell = tableView.dequeueReusableCell(withIdentifier: "listItem") as? BucketListItemTableViewCell {
-            cell.itemName.text = tempItems[indexPath.row]
-            return cell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "listItem") as! BucketListItemTableViewCell
+            
+        if let item = items?[indexPath.row] {
+            cell.itemName.text = item.name
         }
         
-        fatalError("Unable to dequeueReusableCell")
+        return cell
     }
     
     
     // Delete row - Using trailingSwipeActionsConfigurationForRowAt instead of commit editingStyle to change the delete action background color.
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let delete = UIContextualAction(style: .destructive, title: "Delete") { [self] (action, view, completion) in
+            
+            //MARK: Deleting CoreData objects
+            if let itemToRemove = self.items?[indexPath.row] {
+                self.context.delete(itemToRemove)
                 
-            tempItems.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .automatic)
-                
+                do {
+                    try self.context.save()
+                } catch {
+                    print("Error saving context.")
+                }
+            }
+            
+            self.fetchItems()
+            
             completion(true)
         }
             
