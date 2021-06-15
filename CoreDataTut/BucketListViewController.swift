@@ -38,7 +38,9 @@ final class BucketListViewController: UIViewController {
     
     private func addItem(withName name: String) {
         tempItems.append(name)
+        tableView.beginUpdates()
         tableView.insertRows(at: [IndexPath(row: tempItems.count-1, section: 0)], with: .automatic)
+        tableView.endUpdates()
     }
     
     //MARK: - Actions
@@ -87,12 +89,23 @@ extension BucketListViewController: UITableViewDataSource, UITableViewDelegate {
         fatalError("Unable to dequeueReusableCell")
     }
     
-    // Delete row
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
+    
+    // Delete row - Using trailingSwipeActionsConfigurationForRowAt instead of commit editingStyle to change the delete action background color.
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let delete = UIContextualAction(style: .destructive, title: "Delete") { [self] (action, view, completion) in
+                
             tempItems.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .automatic)
+                
+            completion(true)
         }
+            
+        delete.backgroundColor = UIColor(named: "024025026")
+     
+        let config = UISwipeActionsConfiguration(actions: [delete])
+        config.performsFirstActionWithFullSwipe = false
+     
+        return config
     }
     
 }

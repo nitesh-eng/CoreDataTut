@@ -37,7 +37,7 @@
                                                     <rect key="frame" x="5" y="5" width="404" height="70"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="List Item" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="47H-ae-s33">
-                                                            <rect key="frame" x="28" y="25" width="348" height="20.5"/>
+                                                            <rect key="frame" x="20" y="25" width="364" height="20.5"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             <nil key="highlightedColor"/>
@@ -45,9 +45,9 @@
                                                     </subviews>
                                                     <color key="backgroundColor" name="031033034"/>
                                                     <constraints>
-                                                        <constraint firstItem="47H-ae-s33" firstAttribute="leading" secondItem="K4f-H4-Ts5" secondAttribute="leadingMargin" constant="20" id="j2E-HB-tfX"/>
+                                                        <constraint firstAttribute="trailing" secondItem="47H-ae-s33" secondAttribute="trailing" constant="20" id="PM2-i8-X8O"/>
+                                                        <constraint firstItem="47H-ae-s33" firstAttribute="leading" secondItem="K4f-H4-Ts5" secondAttribute="leading" constant="20" id="X78-WN-hjA"/>
                                                         <constraint firstItem="47H-ae-s33" firstAttribute="centerY" secondItem="K4f-H4-Ts5" secondAttribute="centerY" id="sh3-na-Yta"/>
-                                                        <constraint firstAttribute="trailingMargin" secondItem="47H-ae-s33" secondAttribute="trailing" constant="20" id="w9E-e4-Xnn"/>
                                                     </constraints>
                                                     <userDefinedRuntimeAttributes>
                                                         <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
